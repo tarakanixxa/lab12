@@ -1,0 +1,17 @@
+{
+  "generator_seed": 20261123,
+  "fact_rows": 5000,
+  "checks": {
+    "fact_rows_at_least_1000": true,
+    "production_id_unique": true,
+    "no_null_measures": true,
+    "quantity_balance": true,
+    "nonnegative_measures": true,
+    "defect_within_total": true,
+    "no_orphan_machine_keys": true,
+    "no_orphan_date_keys": true,
+    "no_orphan_product_operation_shift": true
+  },
+  "all_passed": true,
+  "duckdb_version": "2.0.1"
+}

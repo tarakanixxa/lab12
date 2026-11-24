@@ -1,0 +1,1 @@
+PIVOT (SELECT s.shift_name,SUM(f.quantity_good) good_units FROM fact_production f JOIN dim_shift s USING(shift_key) GROUP BY s.shift_name) ON shift_name IN ('Ранкова','Вечірня','Нічна') USING SUM(good_units);

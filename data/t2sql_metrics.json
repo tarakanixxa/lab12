@@ -1,0 +1,10 @@
+{
+  "questions_tested": 13,
+  "valid_business_questions": 10,
+  "correct_answers": 10,
+  "correct_share": 1.0,
+  "safe_queries": 11,
+  "safe_share_all": 0.8461538461538461,
+  "mean_cost_usd": 0.0,
+  "note": "Mock/template generator; not a benchmark of a hosted LLM."
+}

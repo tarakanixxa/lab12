@@ -1,0 +1,1 @@
+SELECT d.year_num,d.month_num,m.machine_name,SUM(f.quantity_good) good_units FROM fact_production f JOIN dim_date d USING(date_key) JOIN dim_machine m USING(machine_key) GROUP BY ROLLUP(d.year_num,d.month_num,m.machine_name);

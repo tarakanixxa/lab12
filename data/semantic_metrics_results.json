@@ -1,0 +1,14 @@
+{
+  "metrics": {
+    "total_output": 491244,
+    "good_output": 468514,
+    "defect_rate": 4.627028523503595,
+    "machine_time": 660411.8300000004,
+    "downtime": 62480.65999999992,
+    "average_cycle": 1.3443662009103428
+  },
+  "consistency": {
+    "defect_rate_two_paths_equal": true,
+    "good_output_two_paths_equal": true
+  }
+}

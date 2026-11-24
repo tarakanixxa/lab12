@@ -1,0 +1,60 @@
+metadata:
+  owner: "Аналітична група виробничого комплексу «Метал-Деталь»"
+  reviewed_at: "2026-11-23"
+  status: "draft-verified-on-synthetic-data"
+  source_version: "synthetic-generator-1.0"
+metrics:
+  total_output:
+    title: "Загальний випуск"
+    definition: "Кількість усіх виготовлених деталей."
+    formula: "SUM(fact_production.quantity_total)"
+    unit: "шт."
+    owner: "Керівник виробництва"
+    sources: ["fact_production.quantity_total"]
+    limitations: "Не відображає придатність продукції."
+    sql: "SELECT SUM(quantity_total) AS value FROM fact_production"
+  good_output:
+    title: "Придатний випуск"
+    definition: "Кількість деталей, що пройшли виробничий етап без браку."
+    formula: "SUM(fact_production.quantity_good)"
+    unit: "шт."
+    owner: "Керівник виробництва"
+    sources: ["fact_production.quantity_good"]
+    limitations: "Не є показником кінцевого приймання, якщо етапів декілька."
+    sql: "SELECT SUM(quantity_good) AS value FROM fact_production"
+  defect_rate:
+    title: "Частка браку"
+    definition: "Частка бракованих деталей у загальній кількості."
+    formula: "SUM(quantity_defect) / NULLIF(SUM(quantity_total), 0)"
+    unit: "%"
+    owner: "Відділ контролю якості"
+    sources: ["fact_production.quantity_defect", "fact_production.quantity_total"]
+    limitations: "Не можна усереднювати відсотки рядків; потрібно агрегувати чисельник і знаменник."
+    sql: "SELECT 100.0 * SUM(quantity_defect) / NULLIF(SUM(quantity_total), 0) AS value FROM fact_production"
+  machine_time:
+    title: "Машинний час"
+    definition: "Сумарний час роботи обладнання за виробничими записами."
+    formula: "SUM(machine_minutes)"
+    unit: "хв."
+    owner: "Начальник механічної майстерні"
+    sources: ["fact_production.machine_minutes"]
+    limitations: "Синтетичний час моделює завантаження; не замінює показники PLC/SCADA."
+    sql: "SELECT SUM(machine_minutes) AS value FROM fact_production"
+  downtime:
+    title: "Час простою"
+    definition: "Сумарна тривалість простоїв обладнання."
+    formula: "SUM(downtime_minutes)"
+    unit: "хв."
+    owner: "Начальник механічної майстерні"
+    sources: ["fact_production.downtime_minutes"]
+    limitations: "Причини простою в наборі не деталізовані."
+    sql: "SELECT SUM(downtime_minutes) AS value FROM fact_production"
+  average_cycle:
+    title: "Середній машинний час на деталь"
+    definition: "Відношення сумарного машинного часу до кількості виготовлених деталей."
+    formula: "SUM(machine_minutes) / NULLIF(SUM(quantity_total), 0)"
+    unit: "хв./шт."
+    owner: "Технолог виробництва"
+    sources: ["fact_production.machine_minutes", "fact_production.quantity_total"]
+    limitations: "Середнє зважене за кількістю; не усереднювати середні значення партій."
+    sql: "SELECT SUM(machine_minutes) / NULLIF(SUM(quantity_total), 0) AS value FROM fact_production"

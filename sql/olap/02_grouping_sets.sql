@@ -1,0 +1,1 @@
+SELECT d.year_num,m.machine_type,SUM(f.machine_minutes) machine_minutes FROM fact_production f JOIN dim_date d USING(date_key) JOIN dim_machine m USING(machine_key) GROUP BY GROUPING SETS ((d.year_num,m.machine_type),(d.year_num),(m.machine_type),());

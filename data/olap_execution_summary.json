@@ -1,0 +1,348 @@
+[
+  {
+    "name": "01_rollup_month_machine",
+    "sql": "\nSELECT d.year_num, d.month_num, m.machine_name, SUM(f.quantity_good) AS good_units\nFROM fact_production f JOIN dim_date d USING(date_key) JOIN dim_machine m USING(machine_key)\nGROUP BY ROLLUP(d.year_num, d.month_num, m.machine_name)\nORDER BY d.year_num, d.month_num, m.machine_name\n",
+    "rows": 62,
+    "preview": [
+      {
+        "year_num": 2025,
+        "month_num": 1,
+        "machine_name": "Токарний ЧПК 01",
+        "good_units": 9081.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 1,
+        "machine_name": "Токарний ЧПК 02",
+        "good_units": 8835.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 1,
+        "machine_name": "Токарний ЧПК 03",
+        "good_units": 10473.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 1,
+        "machine_name": "Фрезерний центр 01",
+        "good_units": 10254.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 1,
+        "machine_name": null,
+        "good_units": 38643.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 2,
+        "machine_name": "Токарний ЧПК 01",
+        "good_units": 11232.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 2,
+        "machine_name": "Токарний ЧПК 02",
+        "good_units": 8669.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 2,
+        "machine_name": "Токарний ЧПК 03",
+        "good_units": 9696.0
+      }
+    ]
+  },
+  {
+    "name": "02_grouping_sets",
+    "sql": "\nSELECT d.year_num, m.machine_type, SUM(f.machine_minutes) AS machine_minutes\nFROM fact_production f JOIN dim_date d USING(date_key) JOIN dim_machine m USING(machine_key)\nGROUP BY GROUPING SETS ((d.year_num,m.machine_type),(d.year_num),(m.machine_type),())\nORDER BY d.year_num, m.machine_type\n",
+    "rows": 6,
+    "preview": [
+      {
+        "year_num": 2025,
+        "machine_type": "CNC lathe",
+        "machine_minutes": 498286.5399999996
+      },
+      {
+        "year_num": 2025,
+        "machine_type": "CNC milling",
+        "machine_minutes": 162125.2900000001
+      },
+      {
+        "year_num": 2025,
+        "machine_type": null,
+        "machine_minutes": 660411.8299999996
+      },
+      {
+        "year_num": null,
+        "machine_type": "CNC lathe",
+        "machine_minutes": 498286.5399999996
+      },
+      {
+        "year_num": null,
+        "machine_type": "CNC milling",
+        "machine_minutes": 162125.2900000001
+      },
+      {
+        "year_num": null,
+        "machine_type": null,
+        "machine_minutes": 660411.8299999996
+      }
+    ]
+  },
+  {
+    "name": "03_slice_2025",
+    "sql": "\nSELECT p.product_name, SUM(f.quantity_total) AS produced\nFROM fact_production f JOIN dim_date d USING(date_key) JOIN dim_product p USING(product_key)\nWHERE d.year_num=2025 GROUP BY p.product_name ORDER BY produced DESC\n",
+    "rows": 4,
+    "preview": [
+      {
+        "product_name": "Втулка напрямна",
+        "produced": 125647.0
+      },
+      {
+        "product_name": "Вал приводний",
+        "produced": 125073.0
+      },
+      {
+        "product_name": "Вал проміжний",
+        "produced": 120645.0
+      },
+      {
+        "product_name": "Вал ступінчастий",
+        "produced": 119879.0
+      }
+    ]
+  },
+  {
+    "name": "04_dice_turning_cnc_morning",
+    "sql": "\nSELECT m.machine_name, p.product_name, SUM(f.quantity_good) AS good_units\nFROM fact_production f JOIN dim_machine m USING(machine_key)\nJOIN dim_product p USING(product_key)\nJOIN dim_operation_taxonomy o USING(operation_key)\nJOIN dim_shift s USING(shift_key)\nWHERE m.machine_type='CNC lathe' AND o.subclass_label='Точіння' AND s.shift_name='Ранкова'\nGROUP BY m.machine_name,p.product_name ORDER BY good_units DESC\n",
+    "rows": 12,
+    "preview": [
+      {
+        "machine_name": "Токарний ЧПК 01",
+        "product_name": "Вал проміжний",
+        "good_units": 5808.0
+      },
+      {
+        "machine_name": "Токарний ЧПК 03",
+        "product_name": "Вал проміжний",
+        "good_units": 5341.0
+      },
+      {
+        "machine_name": "Токарний ЧПК 02",
+        "product_name": "Втулка напрямна",
+        "good_units": 5007.0
+      },
+      {
+        "machine_name": "Токарний ЧПК 03",
+        "product_name": "Вал приводний",
+        "good_units": 4998.0
+      },
+      {
+        "machine_name": "Токарний ЧПК 01",
+        "product_name": "Вал приводний",
+        "good_units": 4990.0
+      },
+      {
+        "machine_name": "Токарний ЧПК 03",
+        "product_name": "Вал ступінчастий",
+        "good_units": 4967.0
+      },
+      {
+        "machine_name": "Токарний ЧПК 01",
+        "product_name": "Втулка напрямна",
+        "good_units": 4733.0
+      },
+      {
+        "machine_name": "Токарний ЧПК 02",
+        "product_name": "Вал проміжний",
+        "good_units": 4690.0
+      }
+    ]
+  },
+  {
+    "name": "05_pivot_shift",
+    "sql": "\nPIVOT (SELECT s.shift_name, SUM(f.quantity_good) AS good_units\n       FROM fact_production f JOIN dim_shift s USING(shift_key)\n       GROUP BY s.shift_name)\nON shift_name IN ('Ранкова','Вечірня','Нічна') USING SUM(good_units)\n",
+    "rows": 1,
+    "preview": [
+      {
+        "Ранкова": 152444.0,
+        "Вечірня": 157391.0,
+        "Нічна": 158679.0
+      }
+    ]
+  },
+  {
+    "name": "06_running_total",
+    "sql": "\nWITH monthly AS (\n SELECT d.year_num,d.month_num,SUM(f.quantity_good) good_units\n FROM fact_production f JOIN dim_date d USING(date_key)\n GROUP BY d.year_num,d.month_num\n)\nSELECT *, SUM(good_units) OVER (PARTITION BY year_num ORDER BY month_num\n ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cumulative_good\nFROM monthly ORDER BY year_num,month_num\n",
+    "rows": 12,
+    "preview": [
+      {
+        "year_num": 2025,
+        "month_num": 1,
+        "good_units": 38643.0,
+        "cumulative_good": 38643.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 2,
+        "good_units": 38102.0,
+        "cumulative_good": 76745.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 3,
+        "good_units": 38142.0,
+        "cumulative_good": 114887.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 4,
+        "good_units": 41275.0,
+        "cumulative_good": 156162.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 5,
+        "good_units": 37396.0,
+        "cumulative_good": 193558.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 6,
+        "good_units": 37699.0,
+        "cumulative_good": 231257.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 7,
+        "good_units": 42555.0,
+        "cumulative_good": 273812.0
+      },
+      {
+        "year_num": 2025,
+        "month_num": 8,
+        "good_units": 41034.0,
+        "cumulative_good": 314846.0
+      }
+    ]
+  },
+  {
+    "name": "07_rank_machines",
+    "sql": "\nWITH x AS (\n SELECT m.machine_name, SUM(f.quantity_good) good_units\n FROM fact_production f JOIN dim_machine m USING(machine_key)\n GROUP BY m.machine_name\n)\nSELECT *, RANK() OVER(ORDER BY good_units DESC) AS production_rank\nFROM x ORDER BY production_rank\n",
+    "rows": 4,
+    "preview": [
+      {
+        "machine_name": "Токарний ЧПК 03",
+        "good_units": 119998.0,
+        "production_rank": 1
+      },
+      {
+        "machine_name": "Фрезерний центр 01",
+        "good_units": 117769.0,
+        "production_rank": 2
+      },
+      {
+        "machine_name": "Токарний ЧПК 02",
+        "good_units": 116176.0,
+        "production_rank": 3
+      },
+      {
+        "machine_name": "Токарний ЧПК 01",
+        "good_units": 114571.0,
+        "production_rank": 4
+      }
+    ]
+  },
+  {
+    "name": "08_moving_average",
+    "sql": "\nWITH monthly AS (\n SELECT d.year_num,d.month_num,SUM(f.downtime_minutes) downtime\n FROM fact_production f JOIN dim_date d USING(date_key)\n GROUP BY d.year_num,d.month_num\n)\nSELECT *, AVG(downtime) OVER(ORDER BY year_num,month_num\n ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moving_avg_3m\nFROM monthly ORDER BY year_num,month_num\n",
+    "rows": 12,
+    "preview": [
+      {
+        "year_num": 2025,
+        "month_num": 1,
+        "downtime": 5219.379999999999,
+        "moving_avg_3m": 5219.379999999999
+      },
+      {
+        "year_num": 2025,
+        "month_num": 2,
+        "downtime": 5093.51,
+        "moving_avg_3m": 5156.445
+      },
+      {
+        "year_num": 2025,
+        "month_num": 3,
+        "downtime": 5145.780000000001,
+        "moving_avg_3m": 5152.89
+      },
+      {
+        "year_num": 2025,
+        "month_num": 4,
+        "downtime": 5680.36,
+        "moving_avg_3m": 5306.55
+      },
+      {
+        "year_num": 2025,
+        "month_num": 5,
+        "downtime": 5110.96,
+        "moving_avg_3m": 5312.366666666666
+      },
+      {
+        "year_num": 2025,
+        "month_num": 6,
+        "downtime": 4860.320000000001,
+        "moving_avg_3m": 5217.213333333333
+      },
+      {
+        "year_num": 2025,
+        "month_num": 7,
+        "downtime": 5263.6,
+        "moving_avg_3m": 5078.293333333334
+      },
+      {
+        "year_num": 2025,
+        "month_num": 8,
+        "downtime": 5851.54,
+        "moving_avg_3m": 5325.153333333335
+      }
+    ]
+  },
+  {
+    "name": "09_taxonomy_drilldown",
+    "sql": "\nSELECT o.class_label,o.subclass_label,o.operation_label,\n       SUM(f.machine_minutes) machine_minutes, SUM(f.quantity_total) units\nFROM fact_production f JOIN dim_operation_taxonomy o USING(operation_key)\nGROUP BY o.class_label,o.subclass_label,o.operation_label\nORDER BY o.class_label,o.subclass_label,o.operation_label\n",
+    "rows": 4,
+    "preview": [
+      {
+        "class_label": "Контроль якості",
+        "subclass_label": "Вимірювання",
+        "operation_label": "Контроль розмірів",
+        "machine_minutes": 56944.37000000008,
+        "units": 123314.0
+      },
+      {
+        "class_label": "Механічна обробка",
+        "subclass_label": "Точіння",
+        "operation_label": "Чистове точіння",
+        "machine_minutes": 168208.74999999985,
+        "units": 131366.0
+      },
+      {
+        "class_label": "Механічна обробка",
+        "subclass_label": "Точіння",
+        "operation_label": "Чорнове точіння",
+        "machine_minutes": 206965.50000000017,
+        "units": 119149.0
+      },
+      {
+        "class_label": "Механічна обробка",
+        "subclass_label": "Фрезерування",
+        "operation_label": "Фрезерування пазу",
+        "machine_minutes": 228293.20999999996,
+        "units": 117415.0
+      }
+    ]
+  }
+]

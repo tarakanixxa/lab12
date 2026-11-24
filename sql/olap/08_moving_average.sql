@@ -1,0 +1,1 @@
+WITH x AS (SELECT d.year_num,d.month_num,SUM(f.downtime_minutes) downtime FROM fact_production f JOIN dim_date d USING(date_key) GROUP BY 1,2) SELECT *,AVG(downtime) OVER(ORDER BY year_num,month_num ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) moving_avg_3m FROM x;

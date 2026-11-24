@@ -1,0 +1,1 @@
+WITH x AS (SELECT d.year_num,d.month_num,SUM(f.quantity_good) good_units FROM fact_production f JOIN dim_date d USING(date_key) GROUP BY 1,2) SELECT *,SUM(good_units) OVER(PARTITION BY year_num ORDER BY month_num ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) cumulative_good FROM x;

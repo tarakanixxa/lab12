@@ -1,0 +1,1 @@
+WITH x AS (SELECT m.machine_name,SUM(f.quantity_good) good_units FROM fact_production f JOIN dim_machine m USING(machine_key) GROUP BY 1) SELECT *,RANK() OVER(ORDER BY good_units DESC) production_rank FROM x;
